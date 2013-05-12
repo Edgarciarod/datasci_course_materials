@@ -32,7 +32,7 @@ def extractor(scores, tweet_data):
 
 
 def hw(sent_file, tweet_file):
-    scores = {}  # initialize an empty dictionary
+    scores = {}  # initialize an empty dictionary#
     for line in sent_file:
         term, score = line.split("\t")  # The file is tab-delimited. "\t" means "tab character"
         scores[term] = int(score)  # Convert the score to an integer.
