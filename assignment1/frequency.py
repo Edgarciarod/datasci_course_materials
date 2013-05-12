@@ -4,46 +4,42 @@
 import sys
 import json
 
+my_tweets = {}
 
-def extractor(scores, tweet_data):
-    sentiment_score = 0
+
+def read_tweet(tweet_data):
+    global my_tweets
     try:
         tweet_words = tweet_data[u'text'].strip()
-        tweet_words = tweet_words.lower().split(' ')
-        tweet_words = [s.strip("#@!:)(") for s in tweet_words]
-        #print(tweet_words)
+        tweet_words = tweet_words.split(' ')
+        tweet_words = [s.strip("#@!:)(\n\r\t,.:").replace("\n", "").replace("\r", "").encode('utf-8') for s in
+                       tweet_words]
         for each_word in tweet_words:
-            try:
-                sentiment_score += scores[each_word]
-                #print "---->"+each_word
-            except KeyError:
+            if len(each_word) == 0:
                 continue
-        print (float(sentiment_score))
+            if each_word in my_tweets:
+                my_tweets[each_word] += 1
+            else:
+                my_tweets[each_word] = 1
     except KeyError:
-
-        print (float(sentiment_score))
-        return
+        pass
 
 
-def hw(sent_file, tweet_file):
-    scores = {}  # initialize an empty dictionary
-    for line in sent_file:
-        term, score = line.split("\t")  # The file is tab-delimited. "\t" means "tab character"
-        scores[term] = int(score)  # Convert the score to an integer.
-        #print scores.items()  # Print every (term, score) pair in the dictionary
+def hw(tweet_file):
     all_tweets = tweet_file.readlines()
     for tweet in all_tweets:
         try:
             tweet_data = json.loads(tweet)
-            extractor(scores, tweet_data)
+            read_tweet(tweet_data)
         except ValueError:
             continue
+    for each_key in my_tweets.keys():
+        print "%s %0.3f" % (each_key, float(my_tweets[each_key]) / float(len(my_tweets)))
 
 
 def main():
-    sent_file = open(sys.argv[1])
-    tweet_file = open(sys.argv[2])
-    hw(sent_file, tweet_file)
+    tweet_file = open(sys.argv[1])
+    hw(tweet_file)
 
 
 if __name__ == '__main__':

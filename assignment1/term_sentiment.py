@@ -4,25 +4,31 @@
 import sys
 import json
 
+new_scores = {}
+
 
 def extractor(scores, tweet_data):
-    sentiment_score = 0
+    global new_scores
+    sentiment_score = 0.0
     try:
         tweet_words = tweet_data[u'text'].strip()
         tweet_words = tweet_words.lower().split(' ')
-        tweet_words = [s.strip("#@!:)(") for s in tweet_words]
+        tweet_words = [s.strip("#@!:)(.,\"\' ").encode('utf-8').replace('\n', '').replace('\r', '') for s in
+                       tweet_words]
         #print(tweet_words)
         for each_word in tweet_words:
             try:
-                sentiment_score += scores[each_word]
-                #print "---->"+each_word
+                sentiment_score += float(scores[each_word])
             except KeyError:
                 continue
-        print (float(sentiment_score))
+        for each_word in tweet_words:
+            if not (each_word in scores):
+                if not each_word in new_scores:
+                    new_scores[each_word] = sentiment_score
+                else:
+                    new_scores[each_word] = float(new_scores[each_word] + sentiment_score) / 2.0
     except KeyError:
-
-        print (float(sentiment_score))
-        return
+        pass
 
 
 def hw(sent_file, tweet_file):
@@ -38,6 +44,8 @@ def hw(sent_file, tweet_file):
             extractor(scores, tweet_data)
         except ValueError:
             continue
+    for each_key in new_scores.keys():
+        print "%s %.3f" % (each_key, new_scores[each_key])
 
 
 def main():

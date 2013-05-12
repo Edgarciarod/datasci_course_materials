@@ -8,7 +8,7 @@ import urllib2 as urllib
 
 
 for i in xrange(100):
-    response = urllib.urlopen("http://search.twitter.com/search.json?q=linux&page=" + str(i + 1))
+    response = urllib.urlopen("http://search.twitter.com/search.json?q=edgar&page=" + str(i + 1))
     results = json.load(response)[u'results']
     if len(results) > 0:
         for each_result in results:
