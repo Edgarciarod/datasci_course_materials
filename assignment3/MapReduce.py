@@ -1,5 +1,6 @@
 import json
 
+
 class MapReduce:
     def __init__(self):
         self.intermediate = {}
@@ -10,7 +11,7 @@ class MapReduce:
         self.intermediate[key].append(value)
 
     def emit(self, value):
-        self.result.append(value) 
+        self.result.append(value)
 
     def execute(self, data, mapper, reducer):
         for line in data:
