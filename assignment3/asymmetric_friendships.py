@@ -25,7 +25,10 @@ def mapper(record):
 def reducer(key, list_of_values):
     # key: word
     # value: list of occurrence counts
+
     for v in list_of_values:
+        if list_of_values.count(v) >= 2:
+            continue
         mr.emit((key, v))
 
 # Do not modify below this line
