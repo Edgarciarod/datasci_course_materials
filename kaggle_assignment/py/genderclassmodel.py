@@ -22,28 +22,32 @@ data = np.array(data) #Then convert from a list to an array
 fare_ceiling = 40
 
 data[data[0::, 8].astype(np.float) >= fare_ceiling, 8] = fare_ceiling - 1.0
+
+#print data[0::, 8]
+
 fare_bracket_size = 10
 number_of_price_brackets = fare_ceiling / fare_bracket_size
 number_of_classes = 3 #There were 1st, 2nd and 3rd classes on board
 #This reference table will show we the proportion of survivors as a function of
 # Gender, class and ticket fare.
-survival_table = np.zeros([2, number_of_classes, number_of_price_brackets], float)
+survival_table = np.zeros((2, number_of_classes, number_of_price_brackets), dtype=float)
 
+print(survival_table)
 # I can now find the stats of all the women and men on board
 for i in xrange(number_of_classes):
     for j in xrange(number_of_price_brackets):
-        women_only_stats = data[(data[0::, 3] == "female") \
-                                & (data[0::, 1].astype(np.float) == i + 1) \
-                                & (data[0:, 8].astype(np.float) >= j * fare_bracket_size) \
+        women_only_stats = data[(data[0::, 3] == "female")
+                                & (data[0::, 1].astype(np.float) == i + 1)
+                                & (data[0:, 8].astype(np.float) >= j * fare_bracket_size)
                                 & (data[0:, 8].astype(np.float) < (j + 1) * fare_bracket_size), 0]
 
-        men_only_stats = data[(data[0::, 3] != "female") \
-                              & (data[0::, 1].astype(np.float) == i + 1) \
-                              & (data[0:, 8].astype(np.float) >= j * fare_bracket_size) \
-                              & (data[0:, 8].astype(np.float) < (j + 1) * fare_bracket_size), 0]
+        men_only_stats = data[(data[0::, 3] != "female")
+                              & (data[0::, 1].astype(np.float) == i + 1)
+                              & (data[0::, 8].astype(np.float) >= j * fare_bracket_size)
+                              & (data[0::, 8].astype(np.float) < (j + 1) * fare_bracket_size), 0]
 
         #if i == 0 and j == 3:
-
+        print survival_table
         survival_table[0, i, j] = np.mean(women_only_stats.astype(np.float)) #Women stats
         survival_table[1, i, j] = np.mean(men_only_stats.astype(np.float)) #Men stats
 

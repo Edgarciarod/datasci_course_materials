@@ -1,5 +1,6 @@
-""" This simple code is desinged to teach a basic user to read in the files in python, simply find what proportion of males and females survived and make a predictive model based on this
-Author : AstroDave
+""" This simple code is desinged to teach a basic user to read in the files in python, simply find what proportion of
+males and females survived and make a predictive model based on this
+Author : AstroDave modified by Edgar Garcia
 Date : 18th September, 2012
 
 """
@@ -7,12 +8,11 @@ Date : 18th September, 2012
 import csv as csv
 import numpy as np
 
-csv_file_object = csv.reader(open('../csv/train.csv', 'rb')) #Load in the csv file
-header = csv_file_object.next() #Skip the fist line as it is a header
-data = [] #Creat a variable called 'data'
-for row in csv_file_object: #Skip through each row in the csv file
-    data.append(row) #adding each row to the data variable
-data = np.array(data) #Then convert from a list to an array
+csv_file_object = csv.reader(open('../csv/train.csv', 'rb'))  # Load in the csv file
+
+header_train = csv_file_object.next()                               # Skip the fist line as it is a header
+data = [row for row in csv_file_object]                       # Create a variable called 'data'
+data = np.array(data)                                         # Then convert from a list to an array
 
 #Now I have an array of 11 columns and 891 rows
 #I can access any element I want so the entire first column would
@@ -23,10 +23,11 @@ data = np.array(data) #Then convert from a list to an array
 number_passengers = np.size(data[0::, 0].astype(np.float))
 number_survived = np.sum(data[0::, 0].astype(np.float))
 proportion_survivors = number_passengers / number_survived
+#print number_passengers, number_survived, proportion_survivors
 
 # I can now find the stats of all the women on board
-women_only_stats = data[0::, 3] == "female" #This finds where all the women are
-men_only_stats = data[0::, 3] != "female" #This finds where all the men are
+women_only_stats = data[0::, 3] == "female"  # This finds where all the women are
+men_only_stats = data[0::, 3] != "female"    # This finds where all the men are
 # != means not equal
 
 #I can now find for example the ages of all the women by just placing
@@ -53,6 +54,8 @@ header = test_file_obect.next()
 
 open_file_object = csv.writer(open("../csv/genderbasedmodelpy.csv", "wb"))
 
+open_file_object.writerow(header_train)
+
 for row in test_file_obect:
     if row[2] == 'female':
         row.insert(0, '1') #Insert the prediciton at the start of the row
@@ -60,4 +63,3 @@ for row in test_file_obect:
     else:
         row.insert(0, '0')
         open_file_object.writerow(row)
-
