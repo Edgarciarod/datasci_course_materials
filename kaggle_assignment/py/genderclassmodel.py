@@ -32,7 +32,7 @@ number_of_classes = 3 #There were 1st, 2nd and 3rd classes on board
 # Gender, class and ticket fare.
 survival_table = np.zeros((2, number_of_classes, number_of_price_brackets), dtype=float)
 
-print(survival_table)
+#print(survival_table)
 # I can now find the stats of all the women and men on board
 for i in xrange(number_of_classes):
     for j in xrange(number_of_price_brackets):
@@ -47,9 +47,12 @@ for i in xrange(number_of_classes):
                               & (data[0::, 8].astype(np.float) < (j + 1) * fare_bracket_size), 0]
 
         #if i == 0 and j == 3:
-        print survival_table
+        #print(women_only_stats)
+        #print survival_table
         survival_table[0, i, j] = np.mean(women_only_stats.astype(np.float)) #Women stats
+        #print survival_table[0, i, j]
         survival_table[1, i, j] = np.mean(men_only_stats.astype(np.float)) #Men stats
+        #print survival_table[1, i, j]
 
 #Since in python if it tries to find the mean of an array with nothing in it
 #such that the denominator is 0, then it returns nan, we can convert these to 0
@@ -58,6 +61,7 @@ survival_table[survival_table != survival_table] = 0.
 
 #Now I have my proportion of survivors, simply round them such that if <0.5
 #they dont surivive and >1 they do
+print survival_table
 survival_table[survival_table < 0.5] = 0
 survival_table[survival_table >= 0.5] = 1
 
@@ -77,18 +81,17 @@ for row in test_file_obect:
         #If there is no fare then place the price of the ticket
         #according to class
         try:
-            row[7] = float(row[7]) #No fare recorded will come up as a string so
-            #try to make it a float
-        except: #If fails then just bin the fare according to the class
+            row[7] = float(row[7])  # No fare recorded will come up as a string so
+                                    # try to make it a float
+        except:  # If fails then just bin the fare according to the class
             bin_fare = 3 - float(row[0])
-            break #Break from the loop and move to the next row
-        if row[7] > fare_ceiling: #Otherwise now test to see if it is higher
+            break  # Break from the loop and move to the next row
+        if row[7] > fare_ceiling:  # Otherwise now test to see if it is higher
         #than the fare ceiling we set earlier
             bin_fare = number_of_price_brackets - 1
-            break #And then break to the next row
+            break  # And then break to the next row
 
-        if row[7] >= j * fare_bracket_size \
-            and row[7] < (j + 1) * fare_bracket_size:#If passed these tests then loop through
+        if j * fare_bracket_size <= row[7] < (j + 1) * fare_bracket_size:  # If passed these tests then loop through
         #each bin until you find the right one
         #append it to the binned_price
         #and move to the next loop
